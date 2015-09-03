@@ -52,16 +52,57 @@ for string in robots:
 
 names_of_dirs = [x.encode('UTF8') for x in names_of_dirs]
 
-
 robots_dict = dict(zip(url_count, new_url_list))
 
 url_names_dict = dict(zip(url_count, names_of_dirs))
 
-
-
 #urllib.urlretrieve(robots_dict.get(1), url_names_dict.get(1))
 
-print 'OPTIONS: Help, download all robots pages, list to see all robot, exit() to exit'
+print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
+
+def list():
+    print 'Type in a number to download a specific page'
+    for item in(robots_dict.items()):
+        print item
+
+
+
+def bad_requests():
+    rejected_codes = []
+    rejected_urls = []
+    for item in robots_dict.items():
+        r = requests.get(item[1])
+        if r.status_code != 200:
+            rejected_codes.append(r.status_code)
+            rejected_urls.append(item[1])
+            rejected_dict = dict(zip(rejected_urls, rejected_codes))
+            for items in rejected_dict.items():
+                print items
+
+
+def good_requests():
+    good_urls = []
+    good_url_number = []
+    good_url_dirs = []
+
+    for item in robots_dict.items():
+        r = requests.get(item[1])
+        if r.status_code == 200:
+            good_urls.append(item[1])
+            good_url_number.append(item[0])
+
+    for url in good_urls:
+        regex = re.compile('(.+)(\.\w+)(/)(.+)')
+        repl = '\\4'
+        file_name = regex.sub(repl, url)
+        file_name = file_name.replace('/', '')
+        urllib.urlretrieve(url, file_name)
+
+
+def get_bad():
+    get_bad = raw_input('Some directories/files from the robots file on ' + url + 'have received bad error codes. Would you like to see what they are? y/n ')
+    if get_bad == 'y' or 'Y':
+        bad_requests()
 
 while True:
 
@@ -69,70 +110,29 @@ while True:
 
     if choice == 'exit()':
         break
-
     if choice == 'list':
-        print 'Type in a number to download a specific page'
-        for item in(robots_dict.items()):
-            print item
+        list()
+        continue
 
-    continue
+    if choice == 'bad':
+        get_bad()
+        continue
+
+    if choice == 'all':
+        good_requests()
+        
 
     if choice.isdigit():
-        print 'awesome'
         choice = int(choice)
-        r = requests.get(robots_dict.get(choice))
-        print r.status_code
-        if r.status_code == 200:
-           urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
+    r = requests.get(robots_dict.get(choice))
+        #print r.status_code
+    if r.status_code == 200:
+        urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
 
     else:
        print 'Got a ' + str(requests.get(robots_dict.get(choice)).status_code) + ' status code. Manually browse the page to check it out'
 
     continue
-
-
-    if choice == 'all':
-
-        def bad_requests():
-            rejected_codes = []
-            rejected_urls = []
-            for item in robots_dict.items():
-                r = requests.get(item[1])
-                if r.status_code != 200:
-                    rejected_codes.append(r.status_code)
-                    rejected_urls.append(item[1])
-            rejected_dict = dict(zip(rejected_urls, rejected_codes))
-            for items in rejected_dict.items():
-                print items
-
-        def good_requests():
-            good_urls = []
-            good_url_number = []
-            good_url_dirs = []
-
-            for item in robots_dict.items():
-                r = requests.get(item[1])
-                if r.status_code == 200:
-                    good_urls.append(item[1])
-                    good_url_number.append(item[0])
-
-            for url in good_urls:
-                regex = re.compile('(.+)(\.\w+)(/)(.+)')
-                repl = '\\4'
-                file_name = regex.sub(repl, url)
-                file_name = file_name.replace('/', '')
-                urllib.urlretrieve(url, file_name)
-
-
-        def get_bad():
-            get_bad = raw_input('Some directories/files from the robots file on ' + url + 'have received bad error codes. Would you like to see what they are? y/n ')
-            if get_bad == 'y' or 'Y':
-               bad_requests()
-
-    else: continue
-
-
-
 
 
 
