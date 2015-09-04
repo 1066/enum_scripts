@@ -60,12 +60,6 @@ url_names_dict = dict(zip(url_count, names_of_dirs))
 
 print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
 
-def list():
-    print 'Type in a number to download a specific page'
-    for item in(robots_dict.items()):
-        print item
-
-
 
 def bad_requests():
     rejected_codes = []
@@ -76,11 +70,10 @@ def bad_requests():
             rejected_codes.append(r.status_code)
             rejected_urls.append(item[1])
             rejected_dict = dict(zip(rejected_urls, rejected_codes))
-            for items in rejected_dict.items():
-                print items
+            rejected_dict.items()
 
 
-def good_requests():
+def download_all():
     good_urls = []
     good_url_number = []
     good_url_dirs = []
@@ -98,6 +91,15 @@ def good_requests():
         file_name = file_name.replace('/', '')
         urllib.urlretrieve(url, file_name)
 
+def list():
+    for item in robots_dict.items():
+        r = requests.get(item[1])
+        if r.status_code == 200:
+            print item
+#print 'Type in a number to download a specific page'
+    #for item in(robots_dict.items()):
+     #   print item
+
 
 def get_bad():
     get_bad = raw_input('Some directories/files from the robots file on ' + url + 'have received bad error codes. Would you like to see what they are? y/n ')
@@ -107,33 +109,35 @@ def get_bad():
 while True:
 
     choice = raw_input('>')
+    try:
+        if choice == 'all':
+            download_all()
 
-    if choice == 'exit()':
-        break
-    if choice == 'list':
-        list()
+
+        if choice == 'exit()':
+           break
+        if choice == 'list':
+           list()
+           continue
+
+        if choice == 'bad':
+           get_bad()
+           continue
+
+
+        if choice.isdigit():
+            choice = int(choice)
+            r = requests.get(robots_dict.get(choice))
+            #print r.status_code
+        if r.status_code == 200:
+            urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
+
+        else:
+            print 'Got a ' + str(requests.get(robots_dict.get(choice)).status_code) + ' status code. Manually browse the page to check it out'
         continue
 
-    if choice == 'bad':
-        get_bad()
-        continue
-
-    if choice == 'all':
-        good_requests()
-        
-
-    if choice.isdigit():
-        choice = int(choice)
-    r = requests.get(robots_dict.get(choice))
-        #print r.status_code
-    if r.status_code == 200:
-        urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
-
-    else:
-       print 'Got a ' + str(requests.get(robots_dict.get(choice)).status_code) + ' status code. Manually browse the page to check it out'
-
-    continue
-
+    except:
+            print 'Sorry ' + choice + ' is not a valid option please try again'
 
 
 
