@@ -4,7 +4,7 @@ import re
 import requests
 import socket
 #Grab all subdomains from a given host
-url = raw_input("Enter the URL you would like to scrape\n")
+url = raw_input("Enter the URL you would like to find subdomains on\n")
 if url[0] == 'w':
     print('Please add http:// next time!')
     url = 'http://'+url
