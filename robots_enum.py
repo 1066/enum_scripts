@@ -43,24 +43,45 @@ for path in remove_duplicate:
     new_url_list.append(new_url)
 
 new_url_list = [x.encode('UTF8') for x in new_url_list]
-
-names_of_dirs = []
-for string in robots:
-     remove_forward_slash = string.replace('/', ' ')
-     no_spaces = remove_forward_slash.replace(' ', '')
-     names_of_dirs.append(no_spaces)
-
-names_of_dirs = [x.encode('UTF8') for x in names_of_dirs]
-
 robots_dict = dict(zip(url_count, new_url_list))
 
-url_names_dict = dict(zip(url_count, names_of_dirs))
+list_cache = {}
+def list(choice):
+    if choice == 'list':
+        good_urls = []
+        for item in robots_dict.items():
+            r = requests.get(item[1])
+            if r.status_code == 200:
+                good_urls.append(item[1])
+            url_number = range(1, len(good_urls)+1)
+            good_url_dict = dict(zip(url_number, good_urls))
+        for item in good_url_dict.items():
+            print item
+        list_cache.update(good_url_dict)
+    elif choice.isdigit():
+        choice = int(choice)
+        if not list_cache.get(choice):
+           print "You need to run list first"
 
+        else:
+            full_url = []
+            name = []
+            choice = int(choice)
+            for url in list_cache.values():
+                regex = re.compile('(.+)(\.\w+)(/)(.+)')
+                repl = '\\4'
+                file_name = regex.sub(repl, url)
+                file_name = file_name.replace('/', '')
+                full_url.append(url)
+                name.append(file_name)
+            #url_and_file_name = zip(full_url, name)
+            #print url_and_file_name[choice -1]
+
+            urllib.urlretrieve(full_url[choice -1], name[choice -1])
 
 def download_all():
     good_urls = []
     good_url_number = []
-    good_url_dirs = []
 
     for item in robots_dict.items():
         r = requests.get(item[1])
@@ -84,24 +105,6 @@ def help():
           'all == Download all robots.txt files that are accessible\n' \
           'exit == exit program\n'
 
-#def download_invidual(choice):
-#    choice = int(choice)
- #   r = requests.get(robots_dict.get(choice))
-  #  if r.status_code == 200:
-   #     urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
-
-def list():
-    good_urls = []
-    for item in robots_dict.items():
-        r = requests.get(item[1])
-        if r.status_code == 200:
-            good_urls.append(item[1])
-        url_number = range(1, len(good_urls)+1)
-        good_url_dict = dict(zip(url_number, good_urls))
-    for item in good_url_dict.items():
-        print item
-
-
 
 
 def bad_requests():
@@ -113,9 +116,9 @@ def bad_requests():
             rejected_codes.append(r.status_code)
             rejected_urls.append(item[1])
             rejected_dict = dict(zip(rejected_urls, rejected_codes))
-
     for item in rejected_dict.items():
         print item
+
 
 print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
 
@@ -140,10 +143,21 @@ while True:
         download_all()
         continue
 
-    if choice == 'list':
-        list()
+    if choice == 'list' or choice.isdigit():
+        list(choice)
+
+
+
+
+        '''
+        for items in list_cache.items():
+            if items in list_cache.items():
+                print items
+        else:
+            list()
+            continue
         print
-        print 'To Download type in the number corrosponding with the URL or type ALL to download every Robots file with a 200 response_code'
+        print 'Enter corresponding number with URL to download or type "all" to download every "good" url'
         print
         get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received bad error codes. Would you like to see what they are? y/n\n')
         if get_bad == 'y':
@@ -151,17 +165,9 @@ while True:
 
         elif get_bad == 'n':
             continue
+        '''
 
 
-    if choice.isdigit():
-        pass
-            #regex = re.compile('(.+)(\.\w+)(/)(.+)')
-            #repl = '\\4'
-            #file_name = regex.sub(repl, url)
-            #file_name = file_name.replace('/', '')
-        #    urllib.urlretrieve(good_url_dict.item[choice], url)
-
-    continue
 
    # except:
     #        print 'Sorry ' + str(choice) + ' is not a valid option please try again'
