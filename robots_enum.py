@@ -56,22 +56,6 @@ robots_dict = dict(zip(url_count, new_url_list))
 
 url_names_dict = dict(zip(url_count, names_of_dirs))
 
-#urllib.urlretrieve(robots_dict.get(1), url_names_dict.get(1))
-
-print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
-
-
-def bad_requests():
-    rejected_codes = []
-    rejected_urls = []
-    for item in robots_dict.items():
-        r = requests.get(item[1])
-        if r.status_code != 200:
-            rejected_codes.append(r.status_code)
-            rejected_urls.append(item[1])
-            rejected_dict = dict(zip(rejected_urls, rejected_codes))
-            rejected_dict.items()
-
 
 def download_all():
     good_urls = []
@@ -91,53 +75,96 @@ def download_all():
         file_name = file_name.replace('/', '')
         urllib.urlretrieve(url, file_name)
 
+
+def help():
+    print 'OPTIONS: \n' \
+          'Help == Help\n' \
+          'list == List all robots.txt Disallow Directories that are accessible (200 response codes)\n' \
+          'bad == List all robots.txt files that are not accessible or received anything but a 200 response code\n' \
+          'all == Download all robots.txt files that are accessible\n' \
+          'exit == exit program\n'
+
+#def download_invidual(choice):
+#    choice = int(choice)
+ #   r = requests.get(robots_dict.get(choice))
+  #  if r.status_code == 200:
+   #     urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
+
 def list():
+    good_urls = []
     for item in robots_dict.items():
         r = requests.get(item[1])
         if r.status_code == 200:
-            print item
-#print 'Type in a number to download a specific page'
-    #for item in(robots_dict.items()):
-     #   print item
+            good_urls.append(item[1])
+        url_number = range(1, len(good_urls)+1)
+        good_url_dict = dict(zip(url_number, good_urls))
+    for item in good_url_dict.items():
+        print item
 
 
-def get_bad():
-    get_bad = raw_input('Some directories/files from the robots file on ' + url + 'have received bad error codes. Would you like to see what they are? y/n ')
-    if get_bad == 'y' or 'Y':
-        bad_requests()
+
+
+def bad_requests():
+    rejected_codes = []
+    rejected_urls = []
+    for item in robots_dict.items():
+        r = requests.get(item[1])
+        if r.status_code != 200:
+            rejected_codes.append(r.status_code)
+            rejected_urls.append(item[1])
+            rejected_dict = dict(zip(rejected_urls, rejected_codes))
+
+    for item in rejected_dict.items():
+        print item
+
+print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
 
 while True:
-
+   # try:
     choice = raw_input('>')
-    try:
-        if choice == 'all':
-            download_all()
 
+    if choice == 'exit':
+        break
 
-        if choice == 'exit()':
-           break
-        if choice == 'list':
-           list()
-           continue
-
-        if choice == 'bad':
-           get_bad()
-           continue
-
-
-        if choice.isdigit():
-            choice = int(choice)
-            r = requests.get(robots_dict.get(choice))
-            #print r.status_code
-        if r.status_code == 200:
-            urllib.urlretrieve(robots_dict.get(choice), url_names_dict.get(choice))
-
-        else:
-            print 'Got a ' + str(requests.get(robots_dict.get(choice)).status_code) + ' status code. Manually browse the page to check it out'
+    if choice == 'help':
+        help()
         continue
 
-    except:
-            print 'Sorry ' + choice + ' is not a valid option please try again'
+
+    if choice == 'bad':
+        bad_requests()
+        continue
+
+
+    if choice == 'all':
+        download_all()
+        continue
+
+    if choice == 'list':
+        list()
+        print
+        print 'To Download type in the number corrosponding with the URL or type ALL to download every Robots file with a 200 response_code'
+        print
+        get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received bad error codes. Would you like to see what they are? y/n\n')
+        if get_bad == 'y':
+            bad_requests()
+
+        elif get_bad == 'n':
+            continue
+
+
+    if choice.isdigit():
+        pass
+            #regex = re.compile('(.+)(\.\w+)(/)(.+)')
+            #repl = '\\4'
+            #file_name = regex.sub(repl, url)
+            #file_name = file_name.replace('/', '')
+        #    urllib.urlretrieve(good_url_dict.item[choice], url)
+
+    continue
+
+   # except:
+    #        print 'Sorry ' + str(choice) + ' is not a valid option please try again'
 
 
 
