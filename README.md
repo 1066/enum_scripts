@@ -13,7 +13,7 @@ Also find out which pages may be giving you a 'bad' response code for further in
 help - help
 
 list - list all Disallow robots.txt directories that recieved a 200 OK response code (Enter corrosponding number
-with listed Directories to download indivdual directories,files or pages.
+with listed Directories to download indivdual directories,files or pages.)
 
 bad - list all all Disallow robots.txt directories that received any other response code than a 200 OK response.
 
