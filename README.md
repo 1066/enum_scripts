@@ -19,3 +19,6 @@ bad - list all all Disallow robots.txt directories that received any other respo
 
 all - Download all robots.txt directories that recieved a 200 OK response code.
 
+## Subdomain Scraper
+
+Use regex to grab all subdomains on a given domain name. 
