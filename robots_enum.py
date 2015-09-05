@@ -123,7 +123,7 @@ def see_bad():
     if get_bad == 'y':
         bad_requests()
 
-print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
+print 'OPTIONS: Help for help, list to see all robot pages available, all to download all robots pages and exit() to exit'
 
 while True:
     choice = raw_input('>')
