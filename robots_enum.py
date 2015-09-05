@@ -6,17 +6,15 @@ import wget
 import re
 import urllib
 
-#url = raw_input('Enter Robots URL' 'e.g. "www.awesomehack.com/robots.txt"\n')
-url = 'https://www.pinterest.com/robots.txt'
+url = raw_input('Enter Robots URL' ' e.g. "www.awesomehack.com/robots.txt"\n')
 if url[0] == 'w':
     print('Please add http:// next time!')
     url = 'http://'+url
 
-first_slash = url.index('/')
-remove_slashes = url[first_slash+2:]
-last_slash = remove_slashes.index('/')
-truncate_url = remove_slashes[:last_slash]
-
+    first_slash = url.index('/')
+    remove_slashes = url[first_slash+2:]
+    last_slash = remove_slashes.index('/')
+    truncate_url = remove_slashes[:last_slash]
 with requests.Session() as s:
     s = s.get(url)
     url_text = s.text
@@ -45,6 +43,7 @@ for path in remove_duplicate:
 new_url_list = [x.encode('UTF8') for x in new_url_list]
 robots_dict = dict(zip(url_count, new_url_list))
 
+
 list_cache = {}
 def list(choice):
     if choice == 'list':
@@ -58,6 +57,7 @@ def list(choice):
         for item in good_url_dict.items():
             print item
         list_cache.update(good_url_dict)
+        see_bad()
     elif choice.isdigit():
         choice = int(choice)
         if not list_cache.get(choice):
@@ -74,9 +74,6 @@ def list(choice):
                 file_name = file_name.replace('/', '')
                 full_url.append(url)
                 name.append(file_name)
-            #url_and_file_name = zip(full_url, name)
-            #print url_and_file_name[choice -1]
-
             urllib.urlretrieve(full_url[choice -1], name[choice -1])
 
 def download_all():
@@ -95,7 +92,6 @@ def download_all():
         file_name = regex.sub(repl, url)
         file_name = file_name.replace('/', '')
         urllib.urlretrieve(url, file_name)
-
 
 def help():
     print 'OPTIONS: \n' \
@@ -119,11 +115,17 @@ def bad_requests():
     for item in rejected_dict.items():
         print item
 
+def see_bad():
+    print
+    print 'Enter corresponding number with URL to download or type "all" to download every "good" url'
+    print
+    get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received bad error codes. Would you like to see what they are? y/n\n')
+    if get_bad == 'y':
+        bad_requests()
 
 print 'OPTIONS: Help for help, all to download all robots pages, list to see all robot pages available, exit() to exit'
 
 while True:
-   # try:
     choice = raw_input('>')
 
     if choice == 'exit':
@@ -133,44 +135,24 @@ while True:
         help()
         continue
 
-
     if choice == 'bad':
         bad_requests()
         continue
-
 
     if choice == 'all':
         download_all()
         continue
 
-    if choice == 'list' or choice.isdigit():
+    if choice == 'list':
+        if bool(list_cache) == False:
+            list(choice)
+        else:
+            for item in list_cache.items():
+                print item
+        continue
+
+    if choice.isdigit():
         list(choice)
 
-
-
-
-        '''
-        for items in list_cache.items():
-            if items in list_cache.items():
-                print items
-        else:
-            list()
-            continue
-        print
-        print 'Enter corresponding number with URL to download or type "all" to download every "good" url'
-        print
-        get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received bad error codes. Would you like to see what they are? y/n\n')
-        if get_bad == 'y':
-            bad_requests()
-
-        elif get_bad == 'n':
-            continue
-        '''
-
-
-
-   # except:
-    #        print 'Sorry ' + str(choice) + ' is not a valid option please try again'
-
-
+        continue
 
