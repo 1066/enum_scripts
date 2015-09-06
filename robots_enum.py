@@ -10,7 +10,11 @@ url = raw_input('Enter Robots URL' ' e.g. "www.awesomehack.com/robots.txt"\n')
 if url[0] == 'w':
     print('Please add http:// next time!')
     url = 'http://'+url
-
+    first_slash = url.index('/')
+    remove_slashes = url[first_slash+2:]
+    last_slash = remove_slashes.index('/')
+    truncate_url = remove_slashes[:last_slash]
+else:
     first_slash = url.index('/')
     remove_slashes = url[first_slash+2:]
     last_slash = remove_slashes.index('/')
@@ -149,7 +153,7 @@ while True:
             for item in rejected_dict_cache.items():
                print item
         else:
-            print 'There may not be any bad responses. Try running list first'
+            print 'There may not be any bad responses. Try running list first.'
         continue
 
     if choice == 'download all':
