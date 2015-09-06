@@ -45,6 +45,7 @@ robots_dict = dict(zip(url_count, new_url_list))
 
 
 list_cache = {}
+bad_urls = []
 def list(choice):
     if choice == 'list':
         good_urls = []
@@ -54,10 +55,16 @@ def list(choice):
                 good_urls.append(item[1])
             url_number = range(1, len(good_urls)+1)
             good_url_dict = dict(zip(url_number, good_urls))
-        for item in good_url_dict.items():
-            print item
-        list_cache.update(good_url_dict)
-        see_bad()
+            list_cache.update(good_url_dict)
+            if r.status_code != 200:
+                bad_urls.append(item[1])
+        if bool(bad_urls) == True:
+            for item in list_cache.items():
+                print item
+            see_bad()
+        else:
+            for item in list_cache.items():
+                print item
     elif choice.isdigit():
         choice = int(choice)
         if not list_cache.get(choice):
@@ -98,11 +105,11 @@ def help():
           'Help == Help\n' \
           'list == List all robots.txt Disallow Directories that are accessible (200 response codes)\n' \
           'bad == List all robots.txt files that are not accessible or received anything but a 200 response code\n' \
-          'all == Download all robots.txt files that are accessible\n' \
+          'download all == Download all robots.txt files that are accessible\n' \
           'exit == exit program\n'
 
 
-
+rejected_dict_cache = {}
 def bad_requests():
     rejected_codes = []
     rejected_urls = []
@@ -112,16 +119,17 @@ def bad_requests():
             rejected_codes.append(r.status_code)
             rejected_urls.append(item[1])
             rejected_dict = dict(zip(rejected_urls, rejected_codes))
+            rejected_dict_cache.update(rejected_dict)
     for item in rejected_dict.items():
-        print item
+            print item
 
 def see_bad():
-    print
-    print 'Enter corresponding number with URL to download or type "download all" to download every "good" url'
-    print
-    get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
-    if get_bad == 'y':
-        bad_requests()
+        print
+        print 'Enter corresponding number with URL to download or type "download all" to download every "good" url'
+        print
+        get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
+        if get_bad == 'y':
+            bad_requests()
 
 print'Looks like there are ' + str(len(remove_duplicate)) +  ' Disallow: pages on ' + url
 print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit' \
@@ -137,7 +145,11 @@ while True:
         continue
 
     if choice == 'bad':
-        bad_requests()
+        if bool(rejected_dict_cache) == True:
+            for item in rejected_dict_cache.items():
+               print item
+        else:
+            print 'There may not be any bad responses. Try running list first'
         continue
 
     if choice == 'download all':
