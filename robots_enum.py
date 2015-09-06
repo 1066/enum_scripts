@@ -10,7 +10,7 @@ url = raw_input('Enter Robots URL' ' e.g. "www.awesomehack.com/robots.txt"\n')
 if url[0] == 'w':
     print('Please add http:// next time!')
     url = 'http://'+url
-else:
+
     first_slash = url.index('/')
     remove_slashes = url[first_slash+2:]
     last_slash = remove_slashes.index('/')
