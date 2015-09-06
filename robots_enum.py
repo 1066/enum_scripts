@@ -117,13 +117,13 @@ def bad_requests():
 
 def see_bad():
     print
-    print 'Enter corresponding number with URL to download or type "all" to download every "good" url'
+    print 'Enter corresponding number with URL to download or type "download all" to download every "good" url'
     print
-    get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received bad error codes. Would you like to see what they are? y/n\n')
+    get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
     if get_bad == 'y':
         bad_requests()
 
-print 'OPTIONS: Help for help, list to see all robot pages available, all to download all robots pages and exit() to exit'
+print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit'
 
 while True:
     choice = raw_input('>')
@@ -139,7 +139,7 @@ while True:
         bad_requests()
         continue
 
-    if choice == 'all':
+    if choice == 'download all':
         download_all()
         continue
 
