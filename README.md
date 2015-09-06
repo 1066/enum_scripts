@@ -17,7 +17,7 @@ with listed Directories to download indivdual directories,files or pages.)
 
 bad - list all all Disallow robots.txt directories that received any other response code than a 200 OK response.
 
-all - Download all robots.txt directories that recieved a 200 OK response code.
+download all - Download all robots.txt directories that recieved a 200 OK response code.
 
 ## Subdomain Scraper
 
