@@ -134,7 +134,7 @@ def see_bad():
         get_bad = raw_input('Some directories/files from the robots file on ' + url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
         if get_bad == 'y':
             bad_requests()
-
+print
 print'Looks like there are ' + str(len(remove_duplicate)) +  ' Disallow: pages on ' + url
 print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit' \
 
