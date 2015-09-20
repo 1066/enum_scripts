@@ -77,12 +77,13 @@ def list(choice):
             if r.status_code != 200:
                 bad_urls.append(item[1])
         if bool(bad_urls) == True:
-            for item in list_cache.items():
-                print item
+            for key,value in list_cache.items():
+                print key,value
             see_bad()
         else:
-            for item in list_cache.items():
-                print item
+            for key,value in list_cache.items():
+                print key,value
+
     elif choice.isdigit():
         choice = int(choice)
         if not list_cache.get(choice):
@@ -138,14 +139,14 @@ def bad_requests():
             rejected_urls.append(item[1])
             rejected_dict = dict(zip(rejected_urls, rejected_codes))
             rejected_dict_cache.update(rejected_dict)
-    for item in rejected_dict.items():
-            print item
+    for key,value in rejected_dict.items():
+        print key,value
 
 def see_bad():
         print
         print 'Enter corresponding number with URL to download or type "download all" to download every "good" url'
         print
-        get_bad = raw_input('Some directories/files from the robots file on ' + u.url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
+        get_bad = raw_input('Some directories/files from the robots file on the domain ' + u.url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
         if get_bad == 'y':
             try:
                 if bool(rejected_dict_cache) == False:
@@ -153,8 +154,8 @@ def see_bad():
 
 
                 elif bool(rejected_dict_cache) == True:
-                    for item in rejected_dict_cache.items():
-                        print item
+                    for key,value in rejected_dict_cache.items():
+                        print key,value
 
             except:print 'No Bad Requests Found'
 
@@ -166,7 +167,7 @@ u.remove_allow()
 
 def show_disallow():
     print
-    print'Looks like there are ' + str(u.url_count) +  ' Disallow: pages on ' + u.url
+    print'Looks like there are ' + str(u.url_count) +  ' Disallow: pages on the domain ' + u.url
     print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit' \
 
 show_disallow()
@@ -190,8 +191,8 @@ while True:
 
 
             elif bool(rejected_dict_cache) == True:
-                for item in rejected_dict_cache.items():
-                    print item
+                for key,value in rejected_dict_cache.items():
+                    print key,value
 
         except:print 'No Bad Requests Found'
 
@@ -204,9 +205,11 @@ while True:
     if choice == 'list':
         if bool(list_cache) == False:
             list(choice)
+
         else:
-            for item in list_cache.items():
-                print item
+            for key,value in list_cache.items():
+                print key, value
+
         continue
 
     if choice.isdigit():
