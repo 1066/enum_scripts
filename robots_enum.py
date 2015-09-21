@@ -2,7 +2,6 @@
 
 import requests
 import os
-import wget
 import re
 import urllib
 
