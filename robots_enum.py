@@ -120,12 +120,15 @@ def download_all():
         urllib.urlretrieve(url, file_name)
 
 def help():
-    print 'OPTIONS: \n' \
+    print 'OPTIONS: \n\n' \
           'Help == Help\n' \
           'list == List all robots.txt Disallow Directories that are accessible (200 response codes)\n' \
           'bad == List all robots.txt files that are not accessible or received anything but a 200 response code\n' \
           'download all == Download all robots.txt files that are accessible\n' \
-          'exit == exit program\n'
+          'exit == exit program\n' \
+          'new url == enumerate another URL ' \
+          'see all == see all robots.txt Disallow Directories'
+    print
 
 
 rejected_dict_cache = {}
@@ -139,25 +142,26 @@ def bad_requests():
             rejected_urls.append(item[1])
             rejected_dict = dict(zip(rejected_urls, rejected_codes))
             rejected_dict_cache.update(rejected_dict)
-    for key,value in rejected_dict.items():
-        print key,value
+    for item in rejected_dict.items():
+        print item[0],item[1]
+
 
 def see_bad():
         print
         print 'Enter corresponding number with URL to download or type "download all" to download every "good" url'
         print
-        get_bad = raw_input('Some directories/files from the robots file on the domain ' + u.url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
+        get_bad = raw_input('Some directories/files from the robots file on the domain: ' + u.url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
         if get_bad == 'y':
             try:
                 if bool(rejected_dict_cache) == False:
                     bad_requests()
 
-
                 elif bool(rejected_dict_cache) == True:
-                    for key,value in rejected_dict_cache.items():
-                        print key,value
+                    for item rejected_dict_cache.items():
+                        print item[0],item[1]
 
             except:print 'No Bad Requests Found'
+
 
 u = Url()
 u.get_url()
@@ -165,10 +169,17 @@ u.remove_slashes()
 u.make_request()
 u.remove_allow()
 
+
+def see_all():
+    final_list = u.final_url_list
+    for url in final_list:
+        print url
+
 def show_disallow():
     print
-    print'Looks like there are ' + str(u.url_count) +  ' Disallow: pages on the domain ' + u.url
-    print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit' \
+    print'Looks like there are ' + str(u.url_count) +  ' Disallow: pages on the domain: ' + u.url
+    #print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit' \
+    help()
 
 show_disallow()
 
@@ -222,7 +233,11 @@ while True:
         u.make_request()
         u.remove_allow()
         show_disallow()
+        list_cache.clear()
+        rejected_dict_cache.clear()
 
+    if choice == 'see all':
+        see_all()
 
     continue
 
