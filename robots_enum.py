@@ -149,14 +149,14 @@ def see_bad():
         print
         print 'Enter corresponding number with URL to download or type "download all" to download every "good" url'
         print
-        get_bad = raw_input('Some directories/files from the robots file on the domain: ' + u.url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
+        get_bad = raw_input('Some directories/files from the robots file on the domain: ' + truncate_url + ' have received "bad" error codes. Would you like to see what they are? y/n\n')
         if get_bad == 'y':
             try:
                 if bool(rejected_dict_cache) == False:
                     bad_requests()
 
                 elif bool(rejected_dict_cache) == True:
-                    for item rejected_dict_cache.items():
+                    for item in rejected_dict_cache.items():
                         print item[0],item[1]
 
             except:print 'No Bad Requests Found'
@@ -167,7 +167,7 @@ u.get_url()
 u.remove_slashes()
 u.make_request()
 u.remove_allow()
-
+truncate_url = u.truncate_url
 
 def see_all():
     final_list = u.final_url_list
@@ -176,7 +176,7 @@ def see_all():
 
 def show_disallow():
     print
-    print'Looks like there are ' + str(u.url_count) +  ' Disallow: pages on the domain: ' + u.url
+    print'Looks like there are ' + str(u.url_count) +  ' Disallow: pages on the domain: ' + truncate_url
     #print 'OPTIONS: Help for help, list to see all robot pages available, download all to download all robots pages and exit() to exit' \
     help()
 
@@ -231,9 +231,11 @@ while True:
         u.remove_slashes()
         u.make_request()
         u.remove_allow()
+        truncate_url = u.truncate_url
         show_disallow()
         list_cache.clear()
         rejected_dict_cache.clear()
+
 
     if choice == 'see all':
         see_all()
